@@ -2,7 +2,7 @@ package ss3_method;
 
 import java.util.Scanner;
 
-public class SumOfARow {
+public class SumOfAColumn {
     public static void main(String[] args) {
         Scanner sc = new Scanner(System.in);
         System.out.println("Nhap so hang cua mang:");
