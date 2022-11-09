@@ -28,7 +28,7 @@ public class SumOfAColumn {
             System.out.println("Nhap thu tu cua cot can tinh tong (so thu tu cot tu: 0 den " + (col -1));
             colIndex = Integer.parseInt(sc.nextLine());
         }
-        while (colIndex < 0 || colIndex > (row -1));
+        while (colIndex < 0 || colIndex >= col );
         for (int i = 0; i < row; i++) {
             sumCol += numbers[i][colIndex];
         }
