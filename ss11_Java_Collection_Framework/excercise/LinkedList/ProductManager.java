@@ -1,7 +1,7 @@
-package ss11_Java_Collection_Framework.excercise.product_manager.ArrayList;
+package ss11_Java_Collection_Framework.excercise.LinkedList;
 
 
-import java.util.ArrayList;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Scanner;
 
@@ -10,7 +10,7 @@ public class ProductManager {
     private List<Product> prodList;
 
     public ProductManager() {
-        List<Product> prodList = new ArrayList<>();
+        List<Product> prodList = new LinkedList<>();
     }
 
     public ProductManager(List<Product> prodList) {

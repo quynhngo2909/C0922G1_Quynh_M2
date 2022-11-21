@@ -1,4 +1,4 @@
-package ss11_Java_Collection_Framework.excercise.product_manager.LinkedList;
+package ss11_Java_Collection_Framework.excercise.ArrayList;
 
 public class Product {
     private String id;
