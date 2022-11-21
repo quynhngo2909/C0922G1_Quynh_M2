@@ -1,4 +1,4 @@
-package ss11_Java_Collection_Framework.excercise.LinkedList;
+package ss11_Java_Collection_Framework.excercise.product_manager.ArrayList;
 
 import java.util.*;
 
