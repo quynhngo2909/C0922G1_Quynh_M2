@@ -1,27 +1,24 @@
-package ss11_Java_Collection_Framework.excercise;
-
+package ss11_Java_Collection_Framework.excercise.product_manager.ArrayList;
 
 public class Product {
-    private int id;
+    private String id;
     private String name;
-    private String brand;
-    private double price;
+    private float price;
 
     public Product() {
     }
 
-    public Product(int id, String name, String brand, double price) {
+    public Product(String id, String name, float price) {
         this.id = id;
         this.name = name;
-        this.brand = brand;
         this.price = price;
     }
 
-    public int getId() {
+    public String getId() {
         return id;
     }
 
-    public void setId(int id) {
+    public void setId(String id) {
         this.id = id;
     }
 
@@ -33,28 +30,19 @@ public class Product {
         this.name = name;
     }
 
-    public String getBrand() {
-        return brand;
-    }
-
-    public void setBrand(String brand) {
-        this.brand = brand;
-    }
-
-    public double getPrice() {
+    public float getPrice() {
         return price;
     }
 
-    public void setPrice(double price) {
+    public void setPrice(float price) {
         this.price = price;
     }
 
     @Override
     public String toString() {
         return "Product{" +
-                "id=" + id +
+                "id='" + id + '\'' +
                 ", name='" + name + '\'' +
-                ", brand='" + brand + '\'' +
                 ", price=" + price +
                 '}';
     }
