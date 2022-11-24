@@ -1,4 +1,4 @@
-package ss14_exception;
+package ss14_exception.exercise;
 
 import java.util.Scanner;
 

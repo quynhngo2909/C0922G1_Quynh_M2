@@ -1,4 +1,6 @@
-package ss14_exception;
+package ss14_exception.exercise;
+
+import ss14_exception.exercise.IllegalTriangleException;
 
 public class TriangleCheck {
 
