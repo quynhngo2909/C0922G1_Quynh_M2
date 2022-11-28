@@ -1,4 +1,4 @@
-package ss16_IO_binary_file.exercise.model;
+package ss16_IO_binary_file.exercise.product_manager.model;
 
 import java.io.Serializable;
 

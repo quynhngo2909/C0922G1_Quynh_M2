@@ -1,7 +1,7 @@
-package ss16_IO_binary_file.exercise.repository;
+package ss16_IO_binary_file.exercise.product_manager.repository;
 
 
-import ss16_IO_binary_file.exercise.model.Product;
+import ss16_IO_binary_file.exercise.product_manager.model.Product;
 
 import java.util.ArrayList;
 import java.util.List;

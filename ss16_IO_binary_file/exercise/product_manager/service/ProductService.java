@@ -1,7 +1,7 @@
-package ss16_IO_binary_file.exercise.service;
+package ss16_IO_binary_file.exercise.product_manager.service;
 
-import ss16_IO_binary_file.exercise.model.Product;
-import ss16_IO_binary_file.exercise.repository.ProductRepository;
+import ss16_IO_binary_file.exercise.product_manager.model.Product;
+import ss16_IO_binary_file.exercise.product_manager.repository.ProductRepository;
 
 import java.util.List;
 import java.util.Scanner;

@@ -1,6 +1,6 @@
-package ss16_IO_binary_file.exercise.service;
+package ss16_IO_binary_file.exercise.product_manager.service;
 
-import ss16_IO_binary_file.exercise.model.Product;
+import ss16_IO_binary_file.exercise.product_manager.model.Product;
 
 import java.io.*;
 import java.nio.file.FileSystemNotFoundException;

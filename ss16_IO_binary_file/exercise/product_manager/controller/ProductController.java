@@ -1,7 +1,7 @@
-package ss16_IO_binary_file.exercise.controller;
+package ss16_IO_binary_file.exercise.product_manager.controller;
 
-import ss16_IO_binary_file.exercise.service.IProductService;
-import ss16_IO_binary_file.exercise.service.ProductService;
+import ss16_IO_binary_file.exercise.product_manager.service.IProductService;
+import ss16_IO_binary_file.exercise.product_manager.service.ProductService;
 
 import java.util.Scanner;
 

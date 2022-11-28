@@ -1,6 +1,4 @@
-package ss16_IO_binary_file.exercise.service;
-
-import ss16_IO_binary_file.exercise.model.Product;
+package ss16_IO_binary_file.exercise.product_manager.service;
 
 public interface IProductService {
     public void add(String id);
