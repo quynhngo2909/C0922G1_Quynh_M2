@@ -4,14 +4,11 @@ import models.Facility;
 import models.Room;
 import models.Villa;
 import services.IFacilityService;
+import utils.RegularExpression;
 
 import java.util.*;
 
 public class FacilityServiceImpl implements IFacilityService {
-    /*(String id, String facilityName, String usableArea, double rentalFee, int maxCap, String rentalType,
-        String roomStandard, String swimmingPoolArea, String floorNumber)*/
-
-
     static Scanner sc = new Scanner(System.in);
     static Map<String, Facility> facilityList = new LinkedHashMap<String, Facility>();
     static Map<String, Integer> facilityMaintenance = new LinkedHashMap<String, Integer>();
@@ -66,46 +63,117 @@ public class FacilityServiceImpl implements IFacilityService {
     }
 
     private Facility addNewVilla() {
-        System.out.println("Input the new Villa's id:");
-        String id = sc.nextLine();
-        System.out.println("Input the new Villa's name:");
-        String facilityName = sc.nextLine();
-        System.out.println("Input the new Villa's usable area:");
-        double usableArea = Double.parseDouble(sc.nextLine());
-        System.out.println("Input the new Villa's rental fee:");
-        double rentalFee = Double.parseDouble(sc.nextLine());
-        System.out.println("Input the new Villa's maximum capacity:");
-        int maxCap = Integer.parseInt(sc.nextLine());
-        System.out.println("Input the new Villa's rentalType:");
-        String rentalType = sc.nextLine();
-        System.out.println("Input the new Villa's room standard:");
-        String roomStandard = sc.nextLine();
-        System.out.println("Input swimming pool area");
-        double swimmingPoolArea = Double.parseDouble(sc.nextLine());
-        System.out.println("Input the floor number:");
-        String floorNumber = sc.nextLine();
-        Facility newVilla = new Villa(id, facilityName, usableArea, rentalFee, maxCap, rentalType,
-                roomStandard, swimmingPoolArea, floorNumber);
+        String id;
+        do {
+            System.out.println("Input the new Villa's id:");
+            id = sc.nextLine();
+        } while (!RegularExpression.validVillaID(id));
+
+        String facilityName;
+        do {
+            System.out.println("Input the new Villa's name:");
+            facilityName = sc.nextLine();
+        }while (!RegularExpression.validFacilityName(facilityName));
+
+        String usableArea;
+        do {
+            System.out.println("Input the new Villa's usable area:");
+            usableArea = sc.nextLine();
+        } while (!RegularExpression.validUsableArea(usableArea));
+
+        double doubleUsedArea = Double.parseDouble(usableArea);
+        String rentalFee;
+        do {
+            System.out.println("Input the new Villa's rental fee:");
+            rentalFee = sc.nextLine();
+        } while (!RegularExpression.validRentalFee(rentalFee));
+
+        double doubleRentalFee = Double.parseDouble(rentalFee);
+        String maxCap;
+        do {
+            System.out.println("Input the new Villa's maximum capacity:");
+           maxCap = sc.nextLine();
+        } while (!RegularExpression.validMaxCap(maxCap));
+
+        int integerMaxCap = Integer.parseInt(maxCap);
+        String rentalType;
+        do {
+            System.out.println("Input the new Villa's rentalType:");
+            rentalType = sc.nextLine();
+        } while (!RegularExpression.validRentalType(rentalType));
+
+        String roomStandard;
+        do {
+            System.out.println("Input the new Villa's room standard:");
+            roomStandard = sc.nextLine();
+        } while (!RegularExpression.validRoomStandard(roomStandard));
+
+        String swimmingPoolArea;
+        do {
+            System.out.println("Input swimming pool area");
+            swimmingPoolArea = sc.nextLine();
+        } while (!RegularExpression.validSwimmingPoolArea(swimmingPoolArea));
+
+        double doubleSwimmingPoolArea = Double.parseDouble(swimmingPoolArea);
+        String floorNumber;
+        do {
+            System.out.println("Input the floor number:");
+            floorNumber = sc.nextLine();
+        } while (!RegularExpression.validFloorNumber(floorNumber));
+
+        Facility newVilla = new Villa(id, facilityName, doubleUsedArea, doubleRentalFee, integerMaxCap, rentalType,
+                roomStandard, doubleSwimmingPoolArea, floorNumber);
+
         facilityList.put(newVilla.getId(), newVilla);
         return newVilla;
     }
 
     private Facility addNewRoom() {
-        System.out.println("Input the new Room's id:");
-        String id = sc.nextLine();
-        System.out.println("Input the new Room's name:");
-        String facilityName = sc.nextLine();
-        System.out.println("Input the new Room's usable area:");
-        double usableArea = Double.parseDouble(sc.nextLine());
-        System.out.println("Input the new Room's rental fee:");
-        double rentalFee = Double.parseDouble(sc.nextLine());
-        System.out.println("Input the new Room's maximum capacity:");
-        int maxCap = Integer.parseInt(sc.nextLine());
-        System.out.println("Input the new Room's rentalType:");
-        String rentalType = sc.nextLine();
+        String id;
+        do {
+            System.out.println("Input the new Room's id:");
+            id = sc.nextLine();
+        } while (!RegularExpression.validRoomID(id));
+
+        String facilityName;
+        do {
+            System.out.println("Input the new Room's name:");
+            facilityName = sc.nextLine();
+        }while (!RegularExpression.validFacilityName(facilityName));
+
+        String usableArea;
+        do {
+            System.out.println("Input the new Room's usable area:");
+            usableArea = sc.nextLine();
+        } while (!RegularExpression.validUsableArea(usableArea));
+
+        double doubleUsedArea = Double.parseDouble(usableArea);
+        String rentalFee;
+        do {
+            System.out.println("Input the new Room's rental fee:");
+            rentalFee = sc.nextLine();
+        } while (!RegularExpression.validRentalFee(rentalFee));
+
+        double doubleRentalFee = Double.parseDouble(rentalFee);
+        String maxCap;
+        do {
+            System.out.println("Input the new Room's maximum capacity:");
+            maxCap = sc.nextLine();
+        } while (!RegularExpression.validMaxCap(maxCap));
+
+        int integerMaxCap = Integer.parseInt(maxCap);
+        String rentalType;
+        do {
+            System.out.println("Input the new Room's rentalType:");
+            rentalType = sc.nextLine();
+        } while (!RegularExpression.validRentalType(rentalType));
+
+
         System.out.println("Input the free charged service:");
         String freeChargedService = sc.nextLine();
-        Facility newRoom = new Room(id, facilityName, usableArea, rentalFee, maxCap, rentalType, freeChargedService);
+        Facility newRoom = new Room(id, facilityName, doubleUsedArea, doubleRentalFee, integerMaxCap, rentalType,
+                freeChargedService);
+
         facilityList.put(newRoom.getId(), newRoom);
         return newRoom;
     }
