@@ -120,7 +120,7 @@ public class FuramaController {
                     do {
                         System.out.println("Booking Management Menu:");
                         System.out.println("1. Add new booking");
-                        System.out.println("2. Display list bookinng");
+                        System.out.println("2. Display list booking");
                         System.out.println("3. Return to main menu");
                         System.out.println("Please choose a function you need by entering one of these options: 1 ~ 3");
                         bookingOption = Integer.parseInt(sc.nextLine());

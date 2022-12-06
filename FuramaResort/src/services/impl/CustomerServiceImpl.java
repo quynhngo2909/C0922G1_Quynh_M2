@@ -5,17 +5,18 @@ import libs.CustomerType;
 import libs.Gender;
 import models.Customer;
 import services.ICustomerService;
+import utils.Regex;
 
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.*;
 
 public class CustomerServiceImpl implements ICustomerService {
-    static List<Customer> cuslist = new LinkedList<>();
+    static List<Customer> customerList = new LinkedList<>();
     static Scanner sc = new Scanner(System.in);
     @Override
     public void displayList() {
-        for (Customer c : cuslist) {
+        for (Customer c : customerList) {
             System.out.println(c.toString());
         }
     }
@@ -33,7 +34,7 @@ public class CustomerServiceImpl implements ICustomerService {
         fullName = sc.nextLine();
         LocalDate birthday;
         System.out.println("Input the new customer's birthday");
-        birthday = LocalDate.parse(sc.nextLine(), DateTimeFormatter.ofPattern("dd/MM/yyyy"));
+        birthday = Regex.validateUserAge(LocalDate.parse(sc.nextLine(), DateTimeFormatter.ofPattern("dd/MM/yyyy")));
         String gender;
         do {
             System.out.println("Input the new customer's gender");
@@ -63,7 +64,7 @@ public class CustomerServiceImpl implements ICustomerService {
         System.out.println("Input the new customer's address");
         address = sc.nextLine();
 
-        cuslist.add(new Customer(id, fullName, birthday, gender, identityNumber, phoneNumber, email, customerType,
+        customerList.add(new Customer(id, fullName, birthday, gender, identityNumber, phoneNumber, email, customerType,
                 address));
     }
 
@@ -74,10 +75,10 @@ public class CustomerServiceImpl implements ICustomerService {
         if (!isIdUsed(editedId)) {
             System.out.println("The id " + editedId + " is not exit in customer list.");
         } else {
-            for (Customer c : cuslist) {
+            for (Customer c : customerList) {
                 if (editedId.equals(c.getId())) {
                     do {
-                        System.out.println("Please choose a priority to be edited by inputting : 1 ~ 10");
+                        System.out.println("Please choose a option to be edited by inputting : 1 ~ 10");
                         System.out.println("1. Full name");
                         System.out.println("2. Birthday");
                         System.out.println("3. Gender");
@@ -144,7 +145,7 @@ public class CustomerServiceImpl implements ICustomerService {
         }
     }
     private boolean isIdUsed(String id) {
-        for (Customer c : cuslist) {
+        for (Customer c : customerList) {
             if (id.equals(c.getId())) {
                 System.out.println("The id " + id + " has been used.");
                 return true;
@@ -165,10 +166,9 @@ public class CustomerServiceImpl implements ICustomerService {
     }
 
     private boolean isCoincidentIdentityNumber(String identityNumber) {
-        for (Customer c : cuslist) {
+        for (Customer c : customerList) {
             if (identityNumber.equals(c.getIdentityNumber())) {
-                System.out.println("The identity number " + identityNumber + " has been recorded for employee: " +
-                        c.toString());
+                System.out.println("The identity number " + identityNumber + " has been recorded for employee: " + c);
                 return true;
             }
         }

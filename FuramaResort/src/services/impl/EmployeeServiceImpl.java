@@ -5,19 +5,18 @@ import libs.EmployeeQualification;
 import libs.Gender;
 import models.Employee;
 import services.IEmployeeService;
-import sun.util.resources.LocaleData;
+import utils.Regex;
 
-import java.text.ParseException;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.*;
 
 public class EmployeeServiceImpl implements IEmployeeService {
-    static List<Employee> emplist = new ArrayList<>();
+    static List<Employee> employeeList = new ArrayList<>();
     static Scanner sc = new Scanner(System.in);
     @Override
     public void displayList() {
-        for (Employee e : emplist) {
+        for (Employee e : employeeList) {
             System.out.println(e.toString());
         }
     }
@@ -35,7 +34,8 @@ public class EmployeeServiceImpl implements IEmployeeService {
         fullName = sc.nextLine();
         LocalDate birthday;
         System.out.println("Input the new employee's birthday");
-        birthday = LocalDate.parse(sc.nextLine(), DateTimeFormatter.ofPattern("dd/MM/yyyy"));
+        birthday = Regex.validateUserAge(LocalDate.parse(sc.nextLine(), DateTimeFormatter.ofPattern("dd/MM/yyyy")));
+
         String gender;
         do {
             System.out.println("Input the new employee's gender");
@@ -70,7 +70,7 @@ public class EmployeeServiceImpl implements IEmployeeService {
         System.out.println("Input the new employee's salary");
         salary = Double.parseDouble(sc.nextLine());
 
-        emplist.add(new Employee(id, fullName, birthday, gender, identityNumber, phoneNumber, email, qualification,
+        employeeList.add(new Employee(id, fullName, birthday, gender, identityNumber, phoneNumber, email, qualification,
                 position, salary));
     }
 
@@ -81,9 +81,9 @@ public class EmployeeServiceImpl implements IEmployeeService {
         if (!isIdUsed(deletedId)) {
             System.out.println("The id " + deletedId + " is not exit in employee list.");
         } else {
-            for (Employee e : emplist) {
+            for (Employee e : employeeList) {
                 if (deletedId.equals(e.getId())) {
-                    emplist.remove(e);
+                    employeeList.remove(e);
                     break;
                 }
             }
@@ -97,7 +97,7 @@ public class EmployeeServiceImpl implements IEmployeeService {
         if (!isIdUsed(editedId)) {
             System.out.println("The id " + editedId + " is not exit in employee list.");
         } else {
-            for (Employee e : emplist) {
+            for (Employee e : employeeList) {
                 if (editedId.equals(e.getId())) {
                     do {
                         System.out.println("Please choose a priority to be edited by inputting : 1 ~ 10");
@@ -173,7 +173,7 @@ public class EmployeeServiceImpl implements IEmployeeService {
     }
 
     private boolean isIdUsed(String id) {
-        for (Employee e : emplist) {
+        for (Employee e : employeeList) {
             if (id.equals(e.getId())) {
                 System.out.println("The id " + id + " has been used.");
                 return true;
@@ -194,10 +194,9 @@ public class EmployeeServiceImpl implements IEmployeeService {
     }
 
     private boolean isCoincidentIdentityNumber(String identityNumber) {
-        for (Employee e : emplist) {
+        for (Employee e : employeeList) {
             if (identityNumber.equals(e.getIdentityNumber())) {
-                System.out.println("The identity number " + identityNumber + " has been recorded for employee: " +
-                        e.toString());
+                System.out.println("The identity number " + identityNumber + " has been recorded for employee: " +  e);
                 return true;
             }
         }

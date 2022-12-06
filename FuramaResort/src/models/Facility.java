@@ -1,17 +1,23 @@
 package models;
 
+import java.util.Objects;
+
 public abstract class Facility {
     private String id;
     private String facilityName;
-    private double usableArea;
-    private double rentalFee;
-    private int maxCap;
+    private String usableArea;
+    private String rentalFee;
+    private String maxCap;
     private String rentalType;
 
-    public Facility() {
+    protected Facility() {
     }
 
-    public Facility(String id, String facilityName, double usableArea, double rentalFee, int maxCap,
+    protected Facility(String id) {
+        this.id = id;
+    }
+
+    public Facility(String id, String facilityName, String usableArea, String rentalFee, String maxCap,
                     String rentalType) {
         this.id = id;
         this.facilityName = facilityName;
@@ -37,27 +43,27 @@ public abstract class Facility {
         this.facilityName = facilityName;
     }
 
-    public double getUsableArea() {
+    public String getUsableArea() {
         return usableArea;
     }
 
-    public void setUsableArea(double usableArea) {
+    public void setUsableArea(String usableArea) {
         this.usableArea = usableArea;
     }
 
-    public double getRentalFee() {
+    public String getRentalFee() {
         return rentalFee;
     }
 
-    public void setRentalFee(double rentalFee) {
+    public void setRentalFee(String rentalFee) {
         this.rentalFee = rentalFee;
     }
 
-    public int getMaxCap() {
+    public String getMaxCap() {
         return maxCap;
     }
 
-    public void setMaxCap(int maxCap) {
+    public void setMaxCap(String maxCap) {
         this.maxCap = maxCap;
     }
 
@@ -79,5 +85,18 @@ public abstract class Facility {
                 ", maxCap=" + maxCap +
                 ", rentalType='" + rentalType + '\'' +
                 '}';
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Facility facility = (Facility) o;
+        return Objects.equals(id, facility.id);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id);
     }
 }

@@ -14,10 +14,10 @@ public abstract class Person {
     private String phoneNumber;
     private String email;
 
-    public Person() {
+    protected Person() {
     }
 
-    public Person(String id, String fullName, LocalDate birthday, String gender, String identityNumber,
+    protected Person(String id, String fullName, LocalDate birthday, String gender, String identityNumber,
                   String phoneNumber, String email) {
         this.id = id;
         this.fullName = fullName;
@@ -100,7 +100,7 @@ public abstract class Person {
         return "Person{" +
                 "id='" + id + '\'' +
                 ", fullName='" + fullName + '\'' +
-                ", birthday=" + birthday +
+                ", birthday=" + getBirthdayString() +
                 ", gender='" + gender + '\'' +
                 ", identityNumber='" + identityNumber + '\'' +
                 ", phoneNumber='" + phoneNumber + '\'' +
