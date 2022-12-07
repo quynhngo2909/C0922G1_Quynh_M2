@@ -5,24 +5,30 @@ import libs.EmployeeQualification;
 import libs.Gender;
 import models.Employee;
 import services.IEmployeeService;
+import services.IFileIO;
 import utils.Regex;
 
+import java.io.*;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.*;
 
-public class EmployeeServiceImpl implements IEmployeeService {
-    static List<Employee> employeeList = new ArrayList<>();
-    static Scanner sc = new Scanner(System.in);
+public class EmployeeServiceImpl implements IEmployeeService, IFileIO<Employee> {
+
+    private static final String EMPLOYEE_FILE_PATH = "src\\data\\employee.csv";
+    private Scanner sc = new Scanner(System.in);
+
     @Override
     public void displayList() {
-        for (Employee e : employeeList) {
-            System.out.println(e.toString());
+        Map<String, Employee> employeeMap = readFile(EMPLOYEE_FILE_PATH);
+        for (Map.Entry<String, Employee> e : employeeMap.entrySet()) {
+            System.out.println(e.getValue().toString());
         }
     }
 
     @Override
     public void addNewEmployee() {
+        Map<String, Employee> employeeMap = readFile(EMPLOYEE_FILE_PATH);
         String id;
         do {
             System.out.println("Input id for the new employee");
@@ -32,9 +38,12 @@ public class EmployeeServiceImpl implements IEmployeeService {
         String fullName;
         System.out.println("Input the new employee's full name");
         fullName = sc.nextLine();
-        LocalDate birthday;
+        String stringBirthday;
         System.out.println("Input the new employee's birthday");
-        birthday = Regex.validateUserAge(LocalDate.parse(sc.nextLine(), DateTimeFormatter.ofPattern("dd/MM/yyyy")));
+        stringBirthday = Regex.validateInputtedVariable(Regex.BIRTHDAY, sc.nextLine(),
+                "Birthday is in format dd/MM/yyyy", "birthday");
+        LocalDate birthday = Regex.validateUserAge(LocalDate.parse(stringBirthday,
+                DateTimeFormatter.ofPattern("dd/MM/yyyy")));
 
         String gender;
         do {
@@ -70,35 +79,42 @@ public class EmployeeServiceImpl implements IEmployeeService {
         System.out.println("Input the new employee's salary");
         salary = Double.parseDouble(sc.nextLine());
 
-        employeeList.add(new Employee(id, fullName, birthday, gender, identityNumber, phoneNumber, email, qualification,
+        employeeMap.put(id, new Employee(id, fullName, birthday, gender, identityNumber, phoneNumber, email, qualification,
                 position, salary));
+        for (Map.Entry<String, Employee> e : employeeMap.entrySet()) {
+            System.out.println(e.getKey() + "," + e.getValue().convertToCSVFormat());
+        }
+        writeFile(EMPLOYEE_FILE_PATH, employeeMap);
     }
 
     @Override
     public void deleteEmployee() {
+        Map<String, Employee> employeeMap = readFile(EMPLOYEE_FILE_PATH);
         System.out.println("Please input employee's id");
         String deletedId = sc.nextLine();
-        if (!isIdUsed(deletedId)) {
-            System.out.println("The id " + deletedId + " is not exit in employee list.");
-        } else {
-            for (Employee e : employeeList) {
-                if (deletedId.equals(e.getId())) {
-                    employeeList.remove(e);
-                    break;
-                }
+        String tempDeletedID = null;
+        for (String employeeID : employeeMap.keySet()) {
+            if (deletedId.equals(employeeID)) {
+                tempDeletedID = employeeID;
+                break;
             }
         }
+        if (tempDeletedID != null) {
+            employeeMap.remove(tempDeletedID);
+        }
+        writeFile(EMPLOYEE_FILE_PATH, employeeMap);
     }
 
     @Override
     public void editEmployee() {
+        Map<String, Employee> employeeMap = readFile(EMPLOYEE_FILE_PATH);
         System.out.println("Please input employee's id for editing");
         String editedId = sc.nextLine();
         if (!isIdUsed(editedId)) {
             System.out.println("The id " + editedId + " is not exit in employee list.");
         } else {
-            for (Employee e : employeeList) {
-                if (editedId.equals(e.getId())) {
+            for (Map.Entry<String, Employee> e : employeeMap.entrySet()) {
+                if (editedId.equals(e.getKey())) {
                     do {
                         System.out.println("Please choose a priority to be edited by inputting : 1 ~ 10");
                         System.out.println("1. Full name");
@@ -111,22 +127,22 @@ public class EmployeeServiceImpl implements IEmployeeService {
                         System.out.println("8. Position");
                         System.out.println("9. Salary");
                         System.out.println("10. Exit");
-                        int choice  = Integer.parseInt(sc.nextLine());
+                        int choice = Integer.parseInt(sc.nextLine());
                         switch (choice) {
                             case 1:
                                 System.out.println("Input new edited full name");
                                 String editedFullName = sc.nextLine();
-                                e.setFullName(editedFullName);
+                                e.getValue().setFullName(editedFullName);
                                 break;
                             case 2:
                                 System.out.println("Input new edited birthday");
                                 LocalDate editedBirthday = LocalDate.parse(sc.nextLine(), DateTimeFormatter.ofPattern("dd/MM/yyyy"));
-                                e.setBirthday(editedBirthday);
+                                e.getValue().setBirthday(editedBirthday);
                                 break;
                             case 3:
                                 System.out.println("Input new edited gender");
                                 String editedGender = sc.nextLine();
-                                e.setGender(editedGender);
+                                e.getValue().setGender(editedGender);
                                 break;
                             case 4:
                                 String editedIdentityNumber;
@@ -134,32 +150,32 @@ public class EmployeeServiceImpl implements IEmployeeService {
                                     System.out.println("Input new edited identity number");
                                     editedIdentityNumber = sc.nextLine();
                                 } while (isCoincidentIdentityNumber(editedIdentityNumber));
-                                e.setIdentityNumber(editedIdentityNumber);
+                                e.getValue().setIdentityNumber(editedIdentityNumber);
                                 break;
                             case 5:
                                 System.out.println("Input new edited phone number");
                                 String editedPhoneNumber = sc.nextLine();
-                                e.setPhoneNumber(editedPhoneNumber);
+                                e.getValue().setPhoneNumber(editedPhoneNumber);
                                 break;
                             case 6:
                                 System.out.println("Input new edited email");
                                 String editedEmail = sc.nextLine();
-                                e.setEmail(editedEmail);
+                                e.getValue().setEmail(editedEmail);
                                 break;
                             case 7:
                                 System.out.println("Input new edited qualification");
                                 String editedQualification = sc.nextLine();
-                                e.setQualification(editedQualification);
+                                e.getValue().setQualification(editedQualification);
                                 break;
                             case 8:
                                 System.out.println("Input new edited position");
                                 String editedPosition = sc.nextLine();
-                                e.setPosition(editedPosition);
+                                e.getValue().setPosition(editedPosition);
                                 break;
                             case 9:
                                 System.out.println("Input new edited salary");
                                 double editedSalary = Double.parseDouble(sc.nextLine());
-                                e.setSalary(editedSalary);
+                                e.getValue().setSalary(editedSalary);
                                 break;
                             case 10:
                                 return;
@@ -170,16 +186,18 @@ public class EmployeeServiceImpl implements IEmployeeService {
                 }
             }
         }
+        writeFile(EMPLOYEE_FILE_PATH, employeeMap);
     }
 
     private boolean isIdUsed(String id) {
-        for (Employee e : employeeList) {
-            if (id.equals(e.getId())) {
+        Map<String, Employee> employeeMap = readFile(EMPLOYEE_FILE_PATH);
+        for (String employeeID : employeeMap.keySet()) {
+            if (id.equals(employeeID)) {
                 System.out.println("The id " + id + " has been used.");
                 return true;
             }
         }
-        return false ;
+        return false;
     }
 
     private boolean isGenderValid(String gender) {
@@ -190,17 +208,18 @@ public class EmployeeServiceImpl implements IEmployeeService {
             }
         }
         System.out.println("Please input gender among these options: MALE, FEMALE, LGBT, UNKNOWN");
-        return false ;
+        return false;
     }
 
     private boolean isCoincidentIdentityNumber(String identityNumber) {
-        for (Employee e : employeeList) {
-            if (identityNumber.equals(e.getIdentityNumber())) {
-                System.out.println("The identity number " + identityNumber + " has been recorded for employee: " +  e);
+        Map<String, Employee> employeeMap = readFile(EMPLOYEE_FILE_PATH);
+        for (Map.Entry<String, Employee> e : employeeMap.entrySet()) {
+            if (identityNumber.equals(e.getValue().getIdentityNumber())) {
+                System.out.println("The identity number " + identityNumber + " has been recorded for employee: " + e.getValue());
                 return true;
             }
         }
-        return false ;
+        return false;
     }
 
     private boolean isQualificationValid(String qualification) {
@@ -212,7 +231,7 @@ public class EmployeeServiceImpl implements IEmployeeService {
         }
         System.out.println("Please input qualification among these options: INTERMEDIATE, COLLEGE, UNDERGRADUATE," +
                 " POSTGRADUATE");
-        return false ;
+        return false;
     }
 
     private boolean isPositionValid(String position) {
@@ -224,6 +243,56 @@ public class EmployeeServiceImpl implements IEmployeeService {
         }
         System.out.println("Please input qualification among these options: RECEPTIONIST, WAITER, SPECIALIST ," +
                 " SUPERVISOR, MANAGER, DIRECTOR");
-        return false ;
+        return false;
+    }
+
+    private void validateFilePath(String filePath) {
+        File file = new File(filePath);
+        if (!file.exists()) {
+            try {
+                file.createNewFile();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+    }
+
+    @Override
+    public Map<String, Employee> readFile(String filePath) {
+        validateFilePath(filePath);
+        Map<String, Employee> employeeMap = new LinkedHashMap<String, Employee>();
+        BufferedReader br = null;
+        String line;
+        try {
+            br = new BufferedReader(new FileReader(filePath));
+            while ((line = br.readLine()) != null && !line.isEmpty()) {
+                String[] splitLine = line.split(",");
+                employeeMap.put(splitLine[0], new Employee(splitLine[1], splitLine[2],
+                        LocalDate.parse(splitLine[3], DateTimeFormatter.ofPattern("dd/MM/yyyy")),
+                        splitLine[4], splitLine[5], splitLine[6], splitLine[7], splitLine[8], splitLine[9],
+                        Double.parseDouble(splitLine[10])));
+            }
+            br.close();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        return employeeMap;
+    }
+
+    @Override
+    public void writeFile(String filePath, Map<String, Employee> employeeMap) {
+        validateFilePath(filePath);
+        BufferedWriter bw;
+        try {
+            bw = new BufferedWriter(new FileWriter(filePath));
+            for (Map.Entry<String, Employee> e : employeeMap.entrySet()) {
+                bw.write(e.getKey() + "," + e.getValue().convertToCSVFormat());
+                bw.newLine();
+                bw.close();
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 }

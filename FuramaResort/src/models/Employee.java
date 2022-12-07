@@ -75,4 +75,17 @@ public class Employee extends Person {
                 ", salary=" + salary +
                 "} ";
     }
+
+    public String convertToCSVFormat() {
+        return  super.getId() + ',' +
+                super.getFullName() + ',' +
+                super.getBirthdayString() + ',' +
+                super.getGender() + ',' +
+                super.getIdentityNumber() + ',' +
+                super.getPhoneNumber() + ',' +
+                super.getEmail() + ',' +
+                qualification + ',' +
+                position + ',' +
+                salary;
+    }
 }

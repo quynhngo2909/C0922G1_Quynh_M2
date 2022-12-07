@@ -38,4 +38,14 @@ public class Room extends Facility{
                 ", freeChargedService='" + this.freeChargedService + '\'' +
                 "} ";
     }
+
+    public String convertToFormatCSV() {
+        return  super.getId() + ',' +
+                super.getFacilityName() + ',' +
+                super.getUsableArea() + ',' +
+                super.getRentalFee() + ',' +
+                super.getMaxCap() + ',' +
+                super.getRentalType() + ',' +
+                freeChargedService;
+    }
 }

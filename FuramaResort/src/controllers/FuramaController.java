@@ -10,10 +10,10 @@ import services.impl.FacilityServiceImpl;
 import java.util.Scanner;
 
 public class FuramaController {
-    Scanner sc = new Scanner(System.in);
-    IEmployeeService employeeService = new EmployeeServiceImpl();
-    ICustomerService customerService = new CustomerServiceImpl();
-    IFacilityService facilityService = new FacilityServiceImpl();
+    private Scanner sc = new Scanner(System.in);
+    private IEmployeeService employeeService = new EmployeeServiceImpl();
+    private ICustomerService customerService = new CustomerServiceImpl();
+    private IFacilityService facilityService = new FacilityServiceImpl();
 
     public void displayMainMenu() {
         do {

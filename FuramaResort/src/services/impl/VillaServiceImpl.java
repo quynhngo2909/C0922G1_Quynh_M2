@@ -3,23 +3,23 @@ package services.impl;
 import models.Facility;
 
 import models.Villa;
+import services.IFileIO;
 import services.IVillaService;
 import utils.Regex;
 
+import java.io.*;
 import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.Scanner;
 
-public class VillaServiceImpl implements IVillaService {
+public class VillaServiceImpl implements IVillaService, IFileIO<Facility> {
     private static final String FACILITY = "Villa";
-
-    public static Map<String, Villa> villaMap = new LinkedHashMap<String, Villa>();
-    public static Map<String, Integer> villaMaintenanceMap = new LinkedHashMap<String, Integer>();
-
+    private static final String VILLA_FILE_PATH = "src/data/villa.scv";
     private static final Scanner sc = new Scanner(System.in);
 
     @Override
     public String addNewVilla() {
+        Map<String, Facility> villaMap = readFile(VILLA_FILE_PATH);
         String id;
         boolean isUsedID = false;
         do {
@@ -27,8 +27,8 @@ public class VillaServiceImpl implements IVillaService {
             id = sc.nextLine();
             String idRegex = FACILITY + " ID must be in format \\\"SVVL-YYYY\\\", with YYYY is numbers from 0-9";
             id = Regex.validateInputtedVariable(Regex.FACILITY_VILLA_ID, id, idRegex, FACILITY + " id");
-            Villa tempVilla = new Villa(id);
-            for (Villa villa : villaMap.values()) {
+            Facility tempVilla = new Villa(id);
+            for (Facility villa : villaMap.values()) {
                 if (tempVilla.equals(villa)) {
                     System.out.println("The villa id " + id + " has been used.");
                     isUsedID = true;
@@ -81,22 +81,68 @@ public class VillaServiceImpl implements IVillaService {
 
         Facility newVilla = new Villa(id, facilityName, usableArea, rentalFee, maxCap, rentalType, roomStandard,
                 swimmingPoolArea, floorNumber);
+
+        villaMap.put(newVilla.getId(), newVilla);
+        writeFile(VILLA_FILE_PATH, villaMap);
         return newVilla.getId();
     }
 
     @Override
     public void displayList() {
-        for (Map.Entry<String, Villa> e : villaMap.entrySet()) {
+        Map<String, Facility> villaMap = readFile(VILLA_FILE_PATH);
+        for (Map.Entry<String, Facility> e : villaMap.entrySet()) {
             System.out.println(e.getValue().toString());
         }
     }
 
     @Override
     public void displayVillaListMaintenance() {
-        for (Map.Entry<String, Integer> e : villaMaintenanceMap.entrySet()) {
-            if (e.getValue() >= 5) {
-                System.out.println(e.getKey() + " : " + e.getValue() + " using time(s)");
+    }
+
+    private void validateFilePath(String filePath) {
+        File file = new File(filePath);
+        if (!file.exists()) {
+            try {
+                file.createNewFile();
+            } catch (IOException e) {
+                e.printStackTrace();
             }
+        }
+    }
+
+    @Override
+    public Map<String, Facility> readFile(String filePath) {
+        validateFilePath(filePath);
+        Map<String, Facility> villaMap = new LinkedHashMap<String, Facility>();
+        BufferedReader br;
+        String line;
+        try {
+            br = new BufferedReader(new FileReader(filePath));
+            while ((line = br.readLine()) != null && !line.isEmpty()) {
+                String[] splitLine = line.split(",");
+                villaMap.put(splitLine[0], new Villa(splitLine[1],splitLine[2],splitLine[3],splitLine[4],splitLine[5],
+                        splitLine[6],splitLine[7],splitLine[8],splitLine[9]));
+            }
+            br.close();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        return villaMap;
+    }
+
+    @Override
+    public void writeFile(String filePath, Map<String, Facility> villaMap) {
+        validateFilePath(filePath);
+        BufferedWriter bw;
+        try {
+            bw = new BufferedWriter(new FileWriter(filePath));
+            for (Map.Entry<String, Facility> villa : villaMap.entrySet()) {
+                bw.write(villa.getKey() + "," + villa.getValue().convertToFormatCSV());
+            }
+            bw.close();
+        } catch (IOException e) {
+            e.printStackTrace();
         }
     }
 }

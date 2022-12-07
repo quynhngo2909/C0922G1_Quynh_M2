@@ -56,4 +56,16 @@ public class Customer extends Person {
                 ", address='" + address + '\'' +
                 "} ";
     }
+
+    public String convertToCSVFormat() {
+        return  super.getId() + ',' +
+                super.getFullName() + ',' +
+                super.getBirthdayString() + ',' +
+                super.getGender() + ',' +
+                super.getIdentityNumber() + ',' +
+                super.getPhoneNumber() + ',' +
+                super.getEmail() + ',' +
+                customerType + ',' +
+                address;
+    }
 }

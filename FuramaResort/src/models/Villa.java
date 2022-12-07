@@ -58,4 +58,17 @@ public class Villa extends Facility{
                 ", floorNumber='" + floorNumber + '\'' +
                 "} ";
     }
+
+    public String convertToFormatCSV() {
+        return  super.getId() + ',' +
+                super.getFacilityName() + ',' +
+                super.getUsableArea() + ',' +
+                super.getRentalFee() + ',' +
+                super.getMaxCap() + ',' +
+                super.getRentalType() + ',' +
+                roomStandard + ',' +
+                swimmingPoolArea + ',' +
+                floorNumber;
+
+    }
 }

@@ -99,4 +99,13 @@ public abstract class Facility {
     public int hashCode() {
         return Objects.hash(id);
     }
+
+    public String convertToFormatCSV() {
+        return  id + ',' +
+                facilityName + ',' +
+                usableArea + ',' +
+                rentalFee + ',' +
+                maxCap + ',' +
+                rentalType;
+    }
 }

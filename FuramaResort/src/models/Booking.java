@@ -3,8 +3,6 @@ package models;
 import java.time.LocalDate;
 
 public class Booking {
-//    mã booking, ngày bắt đầu, ngày kết thúc, mã khách hàng, tên dịch vụ.
-
     private String bookingID;
     private LocalDate startDate;
     private LocalDate endDate;

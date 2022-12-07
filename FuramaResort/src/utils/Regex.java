@@ -1,16 +1,13 @@
 package utils;
 
 import java.time.LocalDate;
-import java.time.LocalDateTime;
+
 import java.time.format.DateTimeFormatter;
 import java.util.Scanner;
 import java.util.regex.Pattern;
 
 public class Regex {
 
-    /*
-   -	Ngày sinh phải nhỏ hơn ngày hiện tại 18 năm, người dùng không được quá 100 tuổi và phải đúng định dạng dd/mm/YYYY (sử dụng User Exception)
-   */
     public static final String FACILITY_VILLA_ID = "^(SVVL)-\\d{4}$";
     public static final String FACILITY_ROOM_ID = "^(SVRO)-\\d{4}$";
     public static final String FACILITY_NAME = "^[A-Z][a-z0-9]*$";
@@ -21,6 +18,8 @@ public class Regex {
     public static final String FLOOR_NUMBER = "^[1-9]\\d*$|^[1-9]$\"";
     public static final String RENTAL_TYPE = "^[A-Z][a-z0-9]*$";
     public static final String ROOM_STANDARD = "^[A-Z][a-z0-9]*$";
+
+    public static final String BIRTHDAY = "^\\d{2}/\\d{2}/\\d{4}$";
 
     private static final Scanner sc = new Scanner(System.in);
 
