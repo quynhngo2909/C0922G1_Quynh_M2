@@ -1,6 +1,7 @@
 package services.impl;
 
 import models.Facility;
+import models.Villa;
 import services.IFacilityService;
 import services.IFileIO;
 import services.IRoomService;
@@ -22,37 +23,13 @@ public class FacilityServiceImpl implements IFacilityService, IFileIO<Integer> {
             System.out.println("Facility " + entry.getKey() + " : " + entry.getValue() + " using time(s).");
         }
     }
-
     @Override
-    public void addNewFacility() {
+    public void addNewFacility(String facilityID) {
         Map<String, Integer> facilityMap = readFile(FACILITY_FILE_PATH);
-        do {
-            System.out.println("Please choose a facility to be added");
-            System.out.println("1. Add New Villa");
-            System.out.println("2. Add New Room");
-            System.out.println("3. Back to menu");
-            int choice = Integer.parseInt(sc.nextLine());
-            switch (choice) {
-                case 1:
-                    System.out.println("Add a new villa");
-                    String newVillaID = villaService.addNewVilla();
-                    facilityMap.put(newVillaID, 0);
-                    writeFile(FACILITY_FILE_PATH, facilityMap);
-                    break;
-                case 2:
-                    System.out.println("Add a new Room");
-                    String newRoomId = roomService.addNewRoom();
-                    facilityMap.put(newRoomId, 0);
-                    writeFile(FACILITY_FILE_PATH, facilityMap);
-                    break;
-                case 3:
-                    System.out.println("Back to menu");
-                    return;
-                default:
-                    System.out.println("The option " + choice + " is invalid.");
-            }
-        } while (true);
+        facilityMap.put(facilityID, 0);
+        writeFile(FACILITY_FILE_PATH, facilityMap);
     }
+
 
     @Override
     public void displayListFacilityMaintenance() {

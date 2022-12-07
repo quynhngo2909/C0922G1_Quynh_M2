@@ -1,6 +1,6 @@
 package services;
 
 public interface IFacilityService extends IService {
-    void addNewFacility();
+    void addNewFacility(String facilityID);
     void displayListFacilityMaintenance();
 }

@@ -20,6 +20,11 @@ public class Regex {
     public static final String ROOM_STANDARD = "^[A-Z][a-z0-9]*$";
 
     public static final String BIRTHDAY = "^\\d{2}/\\d{2}/\\d{4}$";
+    public static final String IDENTITY_NUMBER = "^\\d{9}$";
+    public static final String PHONE_NUMBER = "^\\d{10}$";
+    public static final String EMAIL = "^\\w{1,}@(\\w+[.]\\w+){1,}$";
+    public static final String SALARY = "^\\d{1,}$";
+
 
     private static final Scanner sc = new Scanner(System.in);
 

@@ -19,19 +19,15 @@ public class RoomServiceImpl implements IRoomService, IFileIO<Facility> {
     private static final Scanner sc = new Scanner(System.in);
 
     @Override
-    public String addNewRoom() {
+    public String addNewRoom(Facility newRoom) {
         Map<String, Facility> roomMap = readFile(ROOM_FILE_MAP);
         boolean isUsedID = false;
-        String id;
+        String tempID = newRoom.getId();
         do {
-            System.out.println("Please input " + FACILITY + " id");
-            id = sc.nextLine();
-            String idRegex = FACILITY + " ID must be in format \\\"SVRO-YYYY\\\", with YYYY is numbers from 0-9";
-            id = Regex.validateInputtedVariable(Regex.FACILITY_ROOM_ID, id, idRegex, FACILITY + " id");
-            Facility tempRoom = new Room(id);
-            for (Facility room : roomMap.values()) {
-                if (tempRoom.equals(room)) {
-                    System.out.println("The room id " + id + " has been used.");
+            for (String roomID : roomMap.keySet()) {
+                if (tempID.equals(roomID)) {
+                    System.out.println("The room id " + tempID + " has been used. Please input new room id");
+                    tempID = sc.nextLine();
                     isUsedID = true;
                     break;
                 } else {
@@ -40,35 +36,6 @@ public class RoomServiceImpl implements IRoomService, IFileIO<Facility> {
             }
         } while (isUsedID);
 
-        System.out.println("Please input " + FACILITY + " name");
-        String facilityName = sc.nextLine();
-        String nameRegex = FACILITY + " name must begin with a capital character, and normal character onwards.";
-        facilityName = Regex.validateInputtedVariable(Regex.FACILITY_NAME, facilityName, nameRegex, FACILITY + " name");
-
-        System.out.println("Please input " + FACILITY + " usable area");
-        String usableArea = sc.nextLine();
-        String usableAreaRegex = "Usable area must be a real number and bigger than 30";
-        usableArea = Regex.validateInputtedVariable(Regex.USABLE_AREA, usableArea, usableAreaRegex, FACILITY + " usable area");
-
-        System.out.println("Please input " + FACILITY + " rental fee");
-        String rentalFee = sc.nextLine();
-        String rentalFeeRegex = "Rental fee must be a positive real number";
-        rentalFee = Regex.validateInputtedVariable(Regex.RENTAL_FEE, rentalFee, rentalFeeRegex, FACILITY + " rental fee");
-
-        System.out.println("Please input " + FACILITY + " maximum capacity");
-        String maxCap = sc.nextLine();
-        String maxCapRegex = "Maximum capacity must be bigger than 0 and smaller than 20.";
-        maxCap = Regex.validateInputtedVariable(Regex.MAX_CAP, maxCap, maxCapRegex, FACILITY + " maximum capacity");
-
-        System.out.println("Please input " + FACILITY + " rental type");
-        String rentalType = sc.nextLine();
-        String rentalTypeRegex = "Rental type must begin with a capital character, and normal character onwards.";
-        rentalType = Regex.validateInputtedVariable(Regex.RENTAL_TYPE, rentalType, rentalTypeRegex, FACILITY + " rental type");
-
-        System.out.println("Please input " + FACILITY + " free charged service");
-        String freeChargedService = sc.nextLine();
-
-        Room newRoom = new Room(id, facilityName, usableArea, rentalFee, maxCap, rentalType, freeChargedService);
         roomMap.put(newRoom.getId(), newRoom);
         writeFile(ROOM_FILE_MAP,roomMap);
         return newRoom.getId();
