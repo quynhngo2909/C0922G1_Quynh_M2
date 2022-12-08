@@ -41,17 +41,19 @@ public class RoomServiceImpl implements IRoomService, IFileIO<Facility> {
         return newRoom.getId();
     }
 
-    @Override
-    public void displayList() {
-        Map<String, Facility> roomMap = readFile(ROOM_FILE_MAP);
-        for (Map.Entry<String, Facility> e : roomMap.entrySet()) {
-            System.out.println(e.getValue().toString());
-        }
-    }
+//    @Override
+//    public void displayList() {
+//        Map<String, Facility> roomMap = readFile(ROOM_FILE_MAP);
+//        for (Map.Entry<String, Facility> e : roomMap.entrySet()) {
+//            System.out.println(e.getValue().toString());
+//        }
+//    }
 
-    @Override
-    public void displayRoomListMaintenance() {
-    }
+
+
+//    @Override
+//    public void displayRoomListMaintenance() {
+//    }
 
     private void validateFilePath(String filePath) {
         File file = new File(filePath);

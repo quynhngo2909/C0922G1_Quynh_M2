@@ -43,17 +43,17 @@ public class VillaServiceImpl implements IVillaService, IFileIO<Facility> {
         return newVilla.getId();
     }
 
-    @Override
-    public void displayList() {
-        Map<String, Facility> villaMap = readFile(VILLA_FILE_PATH);
-        for (Map.Entry<String, Facility> e : villaMap.entrySet()) {
-            System.out.println(e.getValue().toString());
-        }
-    }
+//    @Override
+//    public void displayList() {
+//        Map<String, Facility> villaMap = readFile(VILLA_FILE_PATH);
+//        for (Map.Entry<String, Facility> e : villaMap.entrySet()) {
+//            System.out.println(e.getValue().toString());
+//        }
+//    }
 
-    @Override
-    public void displayVillaListMaintenance() {
-    }
+//    @Override
+//    public void displayVillaListMaintenance() {
+//    }
 
     private void validateFilePath(String filePath) {
         File file = new File(filePath);

@@ -1,13 +1,9 @@
 package services.impl;
 
-import libs.EmployeePosition;
-import libs.EmployeeQualification;
-import libs.Gender;
 import models.Employee;
+import models.Person;
 import services.IEmployeeService;
 import services.IFileIO;
-import utils.Regex;
-
 import java.io.*;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
@@ -28,24 +24,7 @@ public class EmployeeServiceImpl implements IEmployeeService, IFileIO<Employee> 
 
     @Override
     public void addNewEmployee(Employee o) {
-
         Map<String, Employee> employeeMap = readFile(EMPLOYEE_FILE_PATH);
-        String tempId = o.getId();
-        while (isIdUsed(tempId)) {
-            System.out.println("The id " + tempId + " has been used. Please input id for the new employee");
-            tempId = sc.nextLine();
-        }
-
-        o.setId(tempId);
-
-        String tempIdentityNumber = o.getIdentityNumber();
-        while (isCoincidentIdentityNumber(tempIdentityNumber)) {
-            System.out.println("The identity number " + tempIdentityNumber + " has been used.Input identity number for the new employee");
-            tempIdentityNumber = sc.nextLine();
-        }
-
-        o.setIdentityNumber(tempIdentityNumber);
-
         employeeMap.put(o.getId(), o);
         for (Map.Entry<String, Employee> e : employeeMap.entrySet()) {
             System.out.println(e.getKey() + ", " + e.getValue().toString());
@@ -65,8 +44,8 @@ public class EmployeeServiceImpl implements IEmployeeService, IFileIO<Employee> 
         }
         if (tempDeletedID != null) {
             employeeMap.remove(tempDeletedID);
+            writeFile(EMPLOYEE_FILE_PATH, employeeMap);
         }
-        writeFile(EMPLOYEE_FILE_PATH, employeeMap);
     }
 
     @Override

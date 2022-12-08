@@ -1,12 +1,8 @@
 package services.impl;
 
-
-import libs.CustomerType;
-import libs.Gender;
 import models.Customer;
 import services.ICustomerService;
 import services.IFileIO;
-import utils.Regex;
 
 import java.io.*;
 import java.time.LocalDate;

@@ -1,7 +1,7 @@
 package controllers;
 
 
-import libs.CustomerType;
+import exception.InvalidAgeException;
 import libs.EmployeePosition;
 import libs.EmployeeQualification;
 import libs.Gender;
@@ -15,12 +15,12 @@ import java.time.format.DateTimeFormatter;
 import java.util.Scanner;
 
 public class FuramaController {
-    private Scanner sc = new Scanner(System.in);
-    private IEmployeeService employeeService = new EmployeeServiceImpl();
-    private ICustomerService customerService = new CustomerServiceImpl();
-    private IFacilityService facilityService = new FacilityServiceImpl();
-    private IVillaService villaService = new VillaServiceImpl();
-    private IRoomService roomService = new RoomServiceImpl();
+    private final Scanner sc = new Scanner(System.in);
+    private final IEmployeeService employeeService = new EmployeeServiceImpl();
+    private final ICustomerService customerService = new CustomerServiceImpl();
+    private final IFacilityService facilityService = new FacilityServiceImpl();
+    private final IVillaService villaService = new VillaServiceImpl();
+    private final IRoomService roomService = new RoomServiceImpl();
 
     public void displayMainMenu() {
         do {
@@ -50,90 +50,67 @@ public class FuramaController {
                                 employeeService.displayList();
                                 break;
                             case 2:
-                                System.out.println("Input id for the new employee");
-                                String id = sc.nextLine();
+                                String id;
+                                do {
+                                    System.out.println("Input id for the new employee");
+                                    id = sc.nextLine();
+                                } while (employeeService.isIdUsed(id));
 
                                 System.out.println("Input the new employee's full name");
                                 String fullName = sc.nextLine();
 
-                                String stringBirthday;
                                 System.out.println("Input the new employee's birthday");
-                                stringBirthday = Regex.validateInputtedVariable(Regex.BIRTHDAY, sc.nextLine(),
-                                        "Birthday is in format dd/MM/yyyy", "birthday");
-                                LocalDate birthday = Regex.validateUserAge(LocalDate.parse(stringBirthday,
-                                        DateTimeFormatter.ofPattern("dd/MM/yyyy")));
-
-                                String gender;
-                                boolean isValidGender = false;
+                                String stringBirthday;
+                                LocalDate birthday;
                                 do {
-                                    System.out.println("Input the new employee's gender");
-                                    gender = sc.nextLine().toUpperCase();
-                                    for (Gender g : Gender.values()) {
-                                        if (gender.equals(g.name())) {
-                                            isValidGender = true;
-                                            break;
-                                        }
+                                    stringBirthday = getValidVariable(Regex.BIRTHDAY, sc.nextLine(),
+                                            "Birthday is in format dd/MM/yyyy");
+                                    birthday = LocalDate.parse(stringBirthday,
+                                            DateTimeFormatter.ofPattern("dd/MM/yyyy"));
+                                    try {
+                                        Regex.isValidateAge(birthday);
+                                        break;
+                                    } catch (InvalidAgeException e) {
+                                        System.err.println(e.getMessage());
                                     }
-                                } while (!isValidGender);
+                                } while (true);
 
-                                System.out.println("Input the new employee's identityNumber");
-                                String identityNumber = Regex.validateInputtedVariable(Regex.IDENTITY_NUMBER,
-                                        sc.nextLine(),
-                                        "Identity number is in format xxxxxxxxx, \"x\" is a number 0~9",
-                                        "identity number");
+                                System.out.println("Please input the new employee's gender");
+                                String gender = sc.nextLine();
+                                gender = getValidGender(sc.nextLine());
 
+
+                                String identityNumber;
+                                do {
+                                    System.out.println("Input the new employee's identityNumber");
+                                    identityNumber = getValidVariable(Regex.IDENTITY_NUMBER, sc.nextLine(),
+                                            "Identity number is in format xxxxxxxxx," +
+                                                    " \"x\" is a number 0~9");
+                                } while (employeeService.isCoincidentIdentityNumber(identityNumber));
 
                                 System.out.println("Input the new employee's phone number");
-                                String phoneNumber = Regex.validateInputtedVariable(Regex.PHONE_NUMBER,
-                                        sc.nextLine(),
-                                        "Phone number is in format xxxxxxxxxx, \"x\" is a number 0~9",
-                                        "phone number");
+                                String phoneNumber = sc.nextLine();
+                                phoneNumber = getValidVariable(Regex.PHONE_NUMBER, phoneNumber,
+                                        "Phone number is in format xxxxxxxxxx, \"x\" is a number 0~9");
 
                                 System.out.println("Input the new employee's email");
-                                String email = Regex.validateInputtedVariable(Regex.EMAIL,
-                                        sc.nextLine(),
-                                        "Email is in format *@*, \"*\" is any character",
-                                        "mail");
+                                String email = sc.nextLine();
+                                email = getValidVariable(Regex.PHONE_NUMBER, email,
+                                        "Email is in format *@*, \"*\" is any character");
+
 
                                 System.out.println("Input the new employee's qualification");
-                                String qualification;
-                                boolean isValidQualification = false;
-                                do {
-                                    qualification = sc.nextLine().toUpperCase();
-                                    boolean flag = false;
-                                    for (EmployeeQualification eQ : EmployeeQualification.values()) {
-                                        if (qualification.equals(eQ.name())) {
-                                            isValidQualification = true;
-                                            flag = true;
-                                        }
-                                    }
-                                    if (!flag) {
-                                        System.out.println("Input the new employee's qualification");
-                                    }
-                                } while (!isValidQualification);
+                                String qualification = sc.nextLine();
+                                qualification = getValidQualification(qualification);
 
                                 System.out.println("Input the new employee's position");
-                                String position;
-                                boolean isValidPosition = false;
-                                do {
-                                    boolean flag = false;
-                                    position = sc.nextLine().toUpperCase();
-                                    for (EmployeePosition eP : EmployeePosition.values()) {
-                                        if (position.equals(eP.name())) {
-                                            isValidPosition = true;
-                                            flag = true;
-                                        }
-                                    }
-                                    if (!flag) {
-                                        System.out.println("Input the new employee's position");
-                                    }
-                                } while (!isValidPosition);
+                                String position = sc.nextLine();
+                                position = getValidPosition(position);
 
                                 System.out.println("Input the new employee's salary");
-                                String stringSalary = Regex.validateInputtedVariable(Regex.SALARY,
-                                        sc.nextLine(),
-                                        "Salary must be a positive number",
-                                        "salary");
+                                String stringSalary = sc.nextLine();
+                                stringSalary = getValidVariable(Regex.SALARY, stringSalary,
+                                        "Salary must be a positive number");
                                 double salary = Double.parseDouble(stringSalary);
 
                                 Employee newEmployee = new Employee(id, fullName, birthday, gender, identityNumber,
@@ -143,13 +120,11 @@ public class FuramaController {
                                 break;
                             case 3:
                                 System.out.println("Please input employee's id");
-                                String deletedId = sc.nextLine();
-                                employeeService.deleteEmployee(deletedId);
+                                employeeService.deleteEmployee(sc.nextLine());
                                 break;
                             case 4:
                                 System.out.println("Please input employee's id for editing");
-                                String editedId = sc.nextLine();
-                                employeeService.editEmployee(editedId);
+                                employeeService.editEmployee(sc.nextLine());
                                 break;
                             case 5:
                                 System.out.println("Return to main menu");
@@ -173,74 +148,76 @@ public class FuramaController {
                             case 1:
                                 customerService.displayList();
                                 break;
-                            case 2:
-                                System.out.println("Input id for the new customer");
-                                String id = sc.nextLine();
-
-                                System.out.println("Input the new customer's full name");
-                                String fullName = sc.nextLine();
-
-                                String stringBirthday;
-                                System.out.println("Input the new customer's birthday");
-                                stringBirthday = Regex.validateInputtedVariable(Regex.BIRTHDAY, sc.nextLine(),
-                                        "Birthday is in format dd/MM/yyyy", "birthday");
-                                LocalDate birthday = Regex.validateUserAge(LocalDate.parse(stringBirthday,
-                                        DateTimeFormatter.ofPattern("dd/MM/yyyy")));
-
-                                String gender;
-                                boolean isValidGender = false;
-                                do {
-                                    System.out.println("Input the new customer's gender");
-                                    gender = sc.nextLine().toUpperCase();
-                                    for (Gender g : Gender.values()) {
-                                        if (gender.equals(g.name())) {
-                                            isValidGender = true;
-                                            break;
-                                        }
-                                    }
-                                } while (!isValidGender);
-
-                                System.out.println("Input the new customer's identityNumber");
-                                String identityNumber = Regex.validateInputtedVariable(Regex.IDENTITY_NUMBER,
-                                        sc.nextLine(),
-                                        "Identity number is in format xxxxxxxxx, \"x\" is a number 0~9",
-                                        "identity number");
-
-
-                                System.out.println("Input the new customer's phone number");
-                                String phoneNumber = Regex.validateInputtedVariable(Regex.PHONE_NUMBER,
-                                        sc.nextLine(),
-                                        "Phone number is in format xxxxxxxxxx, \"x\" is a number 0~9",
-                                        "phone number");
-
-                                System.out.println("Input the new customer's email");
-                                String email = Regex.validateInputtedVariable(Regex.EMAIL,
-                                        sc.nextLine(),
-                                        "Email is in format *@*, \"*\" is any character",
-                                        "mail");
-
-
-                                System.out.println("Please input customer type among these options: DIAMOND, PLATINUM, GOLD, SILVER, MEMBER");
-                                String customerType = sc.nextLine().toUpperCase();
-                                boolean isCustomerTypeValid = false;
-                                do {
-                                    for (CustomerType cT : CustomerType.values()) {
-                                        if (customerType.equals(cT.name())) {
-                                            isCustomerTypeValid = true;
-                                            break;
-                                        }
-                                    }
-                                } while (!isCustomerTypeValid);
-
-
-                                System.out.println("Input the new customer's address");
-                                String address = sc.nextLine();
-
-                                Customer newCustomer = new Customer(id, fullName, birthday, gender, identityNumber, phoneNumber, email, customerType,
-                                        address);
-
-                                customerService.addNewCustomer(newCustomer);
-                                break;
+//                            case 2:
+//                                System.out.println("Input id for the new customer");
+//                                String id = sc.nextLine();
+//
+//                                System.out.println("Input the new customer's full name");
+//                                String fullName = sc.nextLine();
+//
+//                                String stringBirthday;
+//                                System.out.println("Input the new customer's birthday");
+//                                stringBirthday = Regex.isValidateInputtedVariable(Regex.BIRTHDAY, sc.nextLine(),
+//                                        "Birthday is in format dd/MM/yyyy", "birthday");
+////                                LocalDate birthday = Regex.validateAge(LocalDate.parse(stringBirthday,
+////                                        DateTimeFormatter.ofPattern("dd/MM/yyyy")), "");
+//
+//                                LocalDate birthday = null;
+//
+//                                String gender;
+//                                boolean isValidGender = false;
+//                                do {
+//                                    System.out.println("Input the new customer's gender");
+//                                    gender = sc.nextLine().toUpperCase();
+//                                    for (Gender g : Gender.values()) {
+//                                        if (gender.equals(g.name())) {
+//                                            isValidGender = true;
+//                                            break;
+//                                        }
+//                                    }
+//                                } while (!isValidGender);
+//
+//                                System.out.println("Input the new customer's identityNumber");
+//                                String identityNumber = Regex.isValidateInputtedVariable(Regex.IDENTITY_NUMBER,
+//                                        sc.nextLine(),
+//                                        "Identity number is in format xxxxxxxxx, \"x\" is a number 0~9",
+//                                        "identity number");
+//
+//
+//                                System.out.println("Input the new customer's phone number");
+//                                String phoneNumber = Regex.isValidateInputtedVariable(Regex.PHONE_NUMBER,
+//                                        sc.nextLine(),
+//                                        "Phone number is in format xxxxxxxxxx, \"x\" is a number 0~9",
+//                                        "phone number");
+//
+//                                System.out.println("Input the new customer's email");
+//                                String email = Regex.isValidateInputtedVariable(Regex.EMAIL,
+//                                        sc.nextLine(),
+//                                        "Email is in format *@*, \"*\" is any character",
+//                                        "mail");
+//
+//
+//                                System.out.println("Please input customer type among these options: DIAMOND, PLATINUM, GOLD, SILVER, MEMBER");
+//                                String customerType = sc.nextLine().toUpperCase();
+//                                boolean isCustomerTypeValid = false;
+//                                do {
+//                                    for (CustomerType cT : CustomerType.values()) {
+//                                        if (customerType.equals(cT.name())) {
+//                                            isCustomerTypeValid = true;
+//                                            break;
+//                                        }
+//                                    }
+//                                } while (!isCustomerTypeValid);
+//
+//
+//                                System.out.println("Input the new customer's address");
+//                                String address = sc.nextLine();
+//
+//                                Customer newCustomer = new Customer(id, fullName, birthday, gender, identityNumber, phoneNumber, email, customerType,
+//                                        address);
+//
+//                                customerService.addNewCustomer(newCustomer);
+//                                break;
                             case 3:
                                 System.out.println("Please input customer's id for editing");
                                 String editedId = sc.nextLine();
@@ -280,41 +257,41 @@ public class FuramaController {
                                         case 1:
                                             System.out.println("Add a new villa");
                                             System.out.println("Please input villa  id");
-                                            String id = Regex.validateInputtedVariable(Regex.FACILITY_VILLA_ID, sc.nextLine(),
+                                            String id = Regex.isValidateInputtedVariable(Regex.FACILITY_VILLA_ID, sc.nextLine(),
                                                     " ID must be in format \\\"SVVL-YYYY\\\", " +
-                                                            "with YYYY is numbers from 0-9",  " villa id");
+                                                            "with YYYY is numbers from 0-9", " villa id");
 
                                             System.out.println("Please input  name");
-                                            String facilityName =  Regex.validateInputtedVariable(Regex.FACILITY_NAME, sc.nextLine(),
+                                            String facilityName = Regex.isValidateInputtedVariable(Regex.FACILITY_NAME, sc.nextLine(),
                                                     "Name must begin with a capital character, and normal character onwards.", "villa name");
 
                                             System.out.println("Please input  usable area");
-                                            String usableArea = Regex.validateInputtedVariable(Regex.USABLE_AREA, sc.nextLine(),
-                                                    "Usable area must be a real number and bigger than 30",  " villa usable area");
+                                            String usableArea = Regex.isValidateInputtedVariable(Regex.USABLE_AREA, sc.nextLine(),
+                                                    "Usable area must be a real number and bigger than 30", " villa usable area");
 
                                             System.out.println("Please input rental fee");
-                                            String rentalFee = Regex.validateInputtedVariable(Regex.RENTAL_FEE, sc.nextLine(),
+                                            String rentalFee = Regex.isValidateInputtedVariable(Regex.RENTAL_FEE, sc.nextLine(),
                                                     "Rental fee must be a positive real number", " villa rental fee");
 
                                             System.out.println("Please input maximum capacity");
-                                            String maxCap = Regex.validateInputtedVariable(Regex.MAX_CAP, sc.nextLine(),
+                                            String maxCap = Regex.isValidateInputtedVariable(Regex.MAX_CAP, sc.nextLine(),
                                                     "Maximum capacity must be bigger than 0 and smaller than 20.", "villa maximum capacity");
 
                                             System.out.println("Please input  rental type");
-                                            String rentalType =  Regex.validateInputtedVariable(Regex.RENTAL_TYPE, sc.nextLine(),
+                                            String rentalType = Regex.isValidateInputtedVariable(Regex.RENTAL_TYPE, sc.nextLine(),
                                                     "Rental type must begin with a capital character, and normal character onwards.", " villa rental type");
 
                                             System.out.println("Please input  room standard");
-                                            String roomStandard = Regex.validateInputtedVariable(Regex.ROOM_STANDARD, sc.nextLine(),
-                                                    "Room standard must begin with a capital character, and normal character onwards",  " room standard");
+                                            String roomStandard = Regex.isValidateInputtedVariable(Regex.ROOM_STANDARD, sc.nextLine(),
+                                                    "Room standard must begin with a capital character, and normal character onwards", " room standard");
 
                                             System.out.println("Please input swimming pool area");
-                                            String swimmingPoolArea = Regex.validateInputtedVariable(Regex.SWIMMING_POOL_AREA, sc.nextLine(),
+                                            String swimmingPoolArea = Regex.isValidateInputtedVariable(Regex.SWIMMING_POOL_AREA, sc.nextLine(),
                                                     "Swimming pool area must be a real number and bigger than 30", " swimming pool area");
 
                                             System.out.println("Please input floor number");
-                                            String floorNumber =  Regex.validateInputtedVariable(Regex.FLOOR_NUMBER, sc.nextLine(),
-                                                    "Floor number must be a positive real number",  " floor number");
+                                            String floorNumber = Regex.isValidateInputtedVariable(Regex.FLOOR_NUMBER, sc.nextLine(),
+                                                    "Floor number must be a positive real number", " floor number");
 
                                             Facility newVilla = new Villa(id, facilityName, usableArea, rentalFee, maxCap, rentalType, roomStandard,
                                                     swimmingPoolArea, floorNumber);
@@ -324,31 +301,31 @@ public class FuramaController {
                                         case 2:
                                             System.out.println("Add a new Room");
                                             System.out.println("Please input room id");
-                                            String roomId = Regex.validateInputtedVariable(Regex.FACILITY_ROOM_ID, sc.nextLine(),
+                                            String roomId = Regex.isValidateInputtedVariable(Regex.FACILITY_ROOM_ID, sc.nextLine(),
                                                     "Room ID must be in format \\\"SVRO-YYYY\\\", with YYYY is numbers from 0-9",
                                                     "room id");
 
 
                                             System.out.println("Please input room name");
-                                            String roomName = Regex.validateInputtedVariable(Regex.FACILITY_NAME, sc.nextLine(),
+                                            String roomName = Regex.isValidateInputtedVariable(Regex.FACILITY_NAME, sc.nextLine(),
                                                     "Room name must begin with a capital character, and normal character onwards.",
                                                     " room name");
 
                                             System.out.println("Please input room usable area");
-                                            String roomUsableArea = Regex.validateInputtedVariable(Regex.USABLE_AREA, sc.nextLine(),
+                                            String roomUsableArea = Regex.isValidateInputtedVariable(Regex.USABLE_AREA, sc.nextLine(),
                                                     "Usable area must be a real number and bigger than 30", " room usable area");
 
                                             System.out.println("Please input room rental fee");
-                                            String roomRentalFee = Regex.validateInputtedVariable(Regex.RENTAL_FEE, sc.nextLine(),
+                                            String roomRentalFee = Regex.isValidateInputtedVariable(Regex.RENTAL_FEE, sc.nextLine(),
                                                     "Rental fee must be a positive real number", " room rental fee");
 
                                             System.out.println("Please input room maximum capacity");
-                                            String roomMaxCap = Regex.validateInputtedVariable(Regex.MAX_CAP, sc.nextLine(),
+                                            String roomMaxCap = Regex.isValidateInputtedVariable(Regex.MAX_CAP, sc.nextLine(),
                                                     "Maximum capacity must be bigger than 0 and smaller than 20.",
                                                     " room maximum capacity");
 
                                             System.out.println("Please input room rental type");
-                                            String roomRentalType = Regex.validateInputtedVariable(Regex.RENTAL_TYPE, sc.nextLine(),
+                                            String roomRentalType = Regex.isValidateInputtedVariable(Regex.RENTAL_TYPE, sc.nextLine(),
                                                     "Rental type must begin with a capital character, and normal character onwards.",
                                                     "room rental type");
 
@@ -430,6 +407,59 @@ public class FuramaController {
                 default:
                     System.out.println("The option " + mainOption + " is invalid.");
             }
+        } while (true);
+    }
+
+    private String getValidVariable(String regex, String inputtedVariable, String variableRequirement) {
+        String validVariable = inputtedVariable;
+        while (Regex.isValidateInputtedVariable(regex, validVariable)) {
+            System.out.println(variableRequirement + ". Please input again:");
+            validVariable = sc.nextLine();
+        }
+
+        return validVariable;
+    }
+
+    private String getValidGender(String gender) {
+        String validGender = gender;
+        do {
+            validGender = validGender.toUpperCase();
+            for (Gender g : Gender.values()) {
+                if (validGender.equals(g.name())) {
+                    return validGender;
+                }
+            }
+            System.out.println("Please input again one of these option: Male, Female, LGBT, Unknown");
+            validGender = sc.nextLine();
+        } while (true);
+    }
+
+    private String getValidQualification(String qualification) {
+        String validQualification = qualification;
+        do {
+            validQualification = validQualification.toUpperCase();
+            for (EmployeeQualification eQ : EmployeeQualification.values()) {
+                if (validQualification.equals(eQ.name())) {
+                    return validQualification;
+                }
+            }
+            System.out.println(" INTERMEDIATE, COLLEGE, UNDERGRADUATE, POSTGRADUATE");
+            validQualification = sc.nextLine();
+        } while (true);
+    }
+
+    private String getValidPosition(String position) {
+        String validPosition = position;
+        do {
+            validPosition = validPosition.toUpperCase();
+            for (EmployeePosition eP : EmployeePosition.values()) {
+                if (validPosition.equals(eP.name())) {
+                  return validPosition;
+                }
+            }
+            System.out.println("Please input again one of these option:  RECEPTIONIST, WAITER, SPECIALIST ," +
+                    " SUPERVISOR, MANAGER, DIRECTOR");
+            validPosition = sc.nextLine();
         } while (true);
     }
 }

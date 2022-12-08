@@ -1,7 +1,5 @@
 package services.impl;
 
-import models.Facility;
-import models.Villa;
 import services.IFacilityService;
 import services.IFileIO;
 import services.IRoomService;

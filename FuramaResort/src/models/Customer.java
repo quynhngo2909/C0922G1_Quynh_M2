@@ -1,9 +1,7 @@
 package models;
 
 import libs.CustomerType;
-
 import java.time.LocalDate;
-import java.util.Date;
 
 public class Customer extends Person {
     private String customerType;

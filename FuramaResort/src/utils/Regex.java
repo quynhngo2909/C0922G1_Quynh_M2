@@ -1,8 +1,9 @@
 package utils;
 
+import exception.InvalidAgeException;
+
 import java.time.LocalDate;
 
-import java.time.format.DateTimeFormatter;
 import java.util.Scanner;
 import java.util.regex.Pattern;
 
@@ -28,7 +29,7 @@ public class Regex {
 
     private static final Scanner sc = new Scanner(System.in);
 
-    public static String validateInputtedVariable(String regex, String inputString, String regexRequirement, String checkedObject) {
+    public static String isValidateInputtedVariable(String regex, String inputString, String regexRequirement, String checkedObject) {
         String stringOutput = inputString;
         boolean isValidInputString = false;
         do {
@@ -45,15 +46,29 @@ public class Regex {
         return stringOutput;
     }
 
-    public  static LocalDate validateUserAge(LocalDate birthday) {
-        LocalDate outputBirthday = birthday;
-        LocalDate today = LocalDate.now();
-        int age = today.compareTo(outputBirthday);
-        while (age < 18 || age >100) {
-            System.out.println("Age must be between 18 ~ 100. Please input birthday again:");
-            outputBirthday = LocalDate.parse(sc.nextLine(), DateTimeFormatter.ofPattern("dd/MM/yyyy"));
-            age = today.compareTo(outputBirthday);
+
+//    public  static LocalDate validateUserAge(LocalDate birthday) {
+//        LocalDate outputBirthday = birthday;
+//        LocalDate today = LocalDate.now();
+//        int age = today.compareTo(outputBirthday);
+//        while (age < 18 || age > 100) {
+//            System.out.println("Age must be between 18 ~ 100. Please input birthday again:");
+//            outputBirthday = LocalDate.parse(sc.nextLine(), DateTimeFormatter.ofPattern("dd/MM/yyyy"));
+//            age = today.compareTo(outputBirthday);
+//        }
+//        return  outputBirthday;
+//    }
+
+    public static boolean isValidateInputtedVariable(String regex, String inputString) {
+        return Pattern.matches(regex, inputString);
+    }
+
+    public static void isValidateAge(LocalDate birthday) throws InvalidAgeException {
+        int age = LocalDate.now().getYear() - birthday.getYear();
+        if (age < 18 || age > 100) {
+            throw new InvalidAgeException("Age must be between 18 ~ 100");
+        } else {
+            System.out.println("Age is valid.");
         }
-        return  outputBirthday;
     }
 }
