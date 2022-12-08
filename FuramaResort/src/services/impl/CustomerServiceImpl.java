@@ -12,8 +12,6 @@ import java.util.*;
 public class CustomerServiceImpl implements ICustomerService, IFileIO<Customer> {
     private static final String Customer_FILE_PATH = "src/data/customer.csv";
 
-    private Scanner sc = new Scanner(System.in);
-
     @Override
     public void displayList() {
         Map<String, Customer> customerMap = readFile(Customer_FILE_PATH);
@@ -25,115 +23,27 @@ public class CustomerServiceImpl implements ICustomerService, IFileIO<Customer> 
     @Override
     public void addNewCustomer(Customer customer) {
         Map<String, Customer> customerMap = readFile(Customer_FILE_PATH);
-
-        String tempId = customer.getId();
-        while (isIdUsed(tempId)) {
-            System.out.println("The id " + tempId + " has been used. Please input id for the new customer");
-            tempId = sc.nextLine();
-        }
-
-        customer.setId(tempId);
-
-        String tempIdentityNumber = customer.getIdentityNumber();
-        while (isCoincidentIdentityNumber(tempIdentityNumber)) {
-            System.out.println("The identity number " + tempIdentityNumber + " has been used." +
-                    "Input identity number for the new customer");
-            tempIdentityNumber = sc.nextLine();
-        }
-
-        customer.setIdentityNumber(tempIdentityNumber);
-
-
         customerMap.put(customer.getId(), customer);
         writeFile(Customer_FILE_PATH, customerMap);
     }
 
     @Override
-    public void editCustomer(String editedId) {
+    public void editCustomer(Customer editedCustomer) {
         Map<String, Customer> customerMap = readFile(Customer_FILE_PATH);
-        String tempEditedID = editedId;
-        while (!isIdUsed(tempEditedID)) {
-            System.out.println( "Please input new Id");
-            tempEditedID = sc.nextLine();
-        }
+        String editedID = editedCustomer.getId();
+        customerMap.get(editedID).setFullName(editedCustomer.getFullName());
+        customerMap.get(editedID).setBirthday(editedCustomer.getBirthday());
+        customerMap.get(editedID).setGender(editedCustomer.getGender());
+        customerMap.get(editedID).setIdentityNumber(editedCustomer.getIdentityNumber());
+        customerMap.get(editedID).setPhoneNumber(editedCustomer.getPhoneNumber());
+        customerMap.get(editedID).setEmail(editedCustomer.getEmail());
+        customerMap.get(editedID).setCustomerType(editedCustomer.getCustomerType());
+        customerMap.get(editedID).setAddress(editedCustomer.getAddress());
+        writeFile(Customer_FILE_PATH, customerMap);
 
-        for (String customerID : customerMap.keySet()) {
-            if (tempEditedID.equals(customerID)) {
-                do {
-                    System.out.println("Please choose a option to be edited by inputting : 1 ~ 10");
-                    System.out.println("1. Full name");
-                    System.out.println("2. Birthday");
-                    System.out.println("3. Gender");
-                    System.out.println("4. Identity number");
-                    System.out.println("5. Phone number");
-                    System.out.println("6. Email");
-                    System.out.println("7. Customer type");
-                    System.out.println("8. Address");
-                    System.out.println("9. Exit");
-                    int choice = Integer.parseInt(sc.nextLine());
-                    switch (choice) {
-                        case 1:
-                            System.out.println("Input new edited full name");
-                            String editedFullName = sc.nextLine();
-                            customerMap.get(customerID).setFullName(editedFullName);
-                            writeFile(Customer_FILE_PATH, customerMap);
-                            break;
-                        case 2:
-                            System.out.println("Input new edited birthday");
-                            LocalDate editedBirthday = LocalDate.parse(sc.nextLine(),
-                                    DateTimeFormatter.ofPattern("dd/MM/yyyy"));
-                            customerMap.get(customerID).setBirthday(editedBirthday);
-                            writeFile(Customer_FILE_PATH, customerMap);
-                            break;
-                        case 3:
-                            System.out.println("Input new edited gender");
-                            String editedGender = sc.nextLine();
-                            customerMap.get(customerID).setGender(editedGender);
-                            writeFile(Customer_FILE_PATH, customerMap);
-                            break;
-                        case 4:
-                            String editedIdentityNumber;
-                            do {
-                                System.out.println("Input new edited identity number");
-                                editedIdentityNumber = sc.nextLine();
-                            } while (isCoincidentIdentityNumber(editedIdentityNumber));
-                            customerMap.get(customerID).setIdentityNumber(editedIdentityNumber);
-                            writeFile(Customer_FILE_PATH, customerMap);
-                            break;
-                        case 5:
-                            System.out.println("Input new edited phone number");
-                            String editedPhoneNumber = sc.nextLine();
-                            customerMap.get(customerID).setPhoneNumber(editedPhoneNumber);
-                            writeFile(Customer_FILE_PATH, customerMap);
-                            break;
-                        case 6:
-                            System.out.println("Input new edited email");
-                            String editedEmail = sc.nextLine();
-                            customerMap.get(customerID).setEmail(editedEmail);
-                            writeFile(Customer_FILE_PATH, customerMap);
-                            break;
-                        case 7:
-                            System.out.println("Input new edited customer type");
-                            String editedCustomerType = sc.nextLine();
-                            customerMap.get(customerID).setCustomerType(editedCustomerType);
-                            writeFile(Customer_FILE_PATH, customerMap);
-                            break;
-                        case 8:
-                            System.out.println("Input new edited address");
-                            String editedAddress = sc.nextLine();
-                            customerMap.get(customerID).setAddress(editedAddress);
-                            writeFile(Customer_FILE_PATH, customerMap);
-                            break;
-                        case 9:
-                            return;
-                        default:
-                            System.out.println("The option " + choice + " is invalid.");
-                    }
-                } while (true);
-            }
-        }
     }
-    private boolean isIdUsed(String id) {
+
+    public boolean isIdUsed(String id) {
         Map<String, Customer> customerMap = readFile(Customer_FILE_PATH);
         for (String customerID : customerMap.keySet()) {
             if (id.equals(customerID)) {
@@ -145,7 +55,7 @@ public class CustomerServiceImpl implements ICustomerService, IFileIO<Customer> 
     }
 
 
-    private boolean isCoincidentIdentityNumber(String identityNumber) {
+    public boolean isCoincidentIdentityNumber(String identityNumber) {
         Map<String, Customer> customerMap = readFile(Customer_FILE_PATH);
         for (Customer c : customerMap.values()) {
             if (identityNumber.equals(c.getIdentityNumber())) {

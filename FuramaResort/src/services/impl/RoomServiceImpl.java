@@ -5,7 +5,6 @@ import models.Room;
 
 import services.IFileIO;
 import services.IRoomService;
-import utils.Regex;
 
 import java.io.*;
 import java.util.LinkedHashMap;
@@ -21,39 +20,10 @@ public class RoomServiceImpl implements IRoomService, IFileIO<Facility> {
     @Override
     public String addNewRoom(Facility newRoom) {
         Map<String, Facility> roomMap = readFile(ROOM_FILE_MAP);
-        boolean isUsedID = false;
-        String tempID = newRoom.getId();
-        do {
-            for (String roomID : roomMap.keySet()) {
-                if (tempID.equals(roomID)) {
-                    System.out.println("The room id " + tempID + " has been used. Please input new room id");
-                    tempID = sc.nextLine();
-                    isUsedID = true;
-                    break;
-                } else {
-                    isUsedID = false;
-                }
-            }
-        } while (isUsedID);
-
         roomMap.put(newRoom.getId(), newRoom);
         writeFile(ROOM_FILE_MAP,roomMap);
         return newRoom.getId();
     }
-
-//    @Override
-//    public void displayList() {
-//        Map<String, Facility> roomMap = readFile(ROOM_FILE_MAP);
-//        for (Map.Entry<String, Facility> e : roomMap.entrySet()) {
-//            System.out.println(e.getValue().toString());
-//        }
-//    }
-
-
-
-//    @Override
-//    public void displayRoomListMaintenance() {
-//    }
 
     private void validateFilePath(String filePath) {
         File file = new File(filePath);
@@ -100,5 +70,16 @@ public class RoomServiceImpl implements IRoomService, IFileIO<Facility> {
         } catch (IOException e) {
             e.printStackTrace();
         }
+    }
+
+    public boolean isUsedID(String id) {
+        Map<String, Facility> roomMap = readFile(ROOM_FILE_MAP);
+            for (String roomID : roomMap.keySet()) {
+                if (id.equals(roomID)) {
+                    System.out.println("The room id " + id + " has been used.");
+                    return true;
+                }
+            }
+            return false;
     }
 }

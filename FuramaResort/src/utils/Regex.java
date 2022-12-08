@@ -20,7 +20,7 @@ public class Regex {
     public static final String RENTAL_TYPE = "^[A-Z][a-z0-9]*$";
     public static final String ROOM_STANDARD = "^[A-Z][a-z0-9]*$";
 
-    public static final String BIRTHDAY = "^\\d{2}/\\d{2}/\\d{4}$";
+    public static final String BIRTHDAY = "^(0[1-9]|[1]\\d|[2]\\d|[3][0-1])/([0][1-9]|[1][0-2])/\\d{4}$";
     public static final String IDENTITY_NUMBER = "^\\d{9}$";
     public static final String PHONE_NUMBER = "^\\d{10}$";
     public static final String EMAIL = "^\\w{1,}@(\\w+[.]\\w+){1,}$";
@@ -46,18 +46,6 @@ public class Regex {
         return stringOutput;
     }
 
-
-//    public  static LocalDate validateUserAge(LocalDate birthday) {
-//        LocalDate outputBirthday = birthday;
-//        LocalDate today = LocalDate.now();
-//        int age = today.compareTo(outputBirthday);
-//        while (age < 18 || age > 100) {
-//            System.out.println("Age must be between 18 ~ 100. Please input birthday again:");
-//            outputBirthday = LocalDate.parse(sc.nextLine(), DateTimeFormatter.ofPattern("dd/MM/yyyy"));
-//            age = today.compareTo(outputBirthday);
-//        }
-//        return  outputBirthday;
-//    }
 
     public static boolean isValidateInputtedVariable(String regex, String inputString) {
         return Pattern.matches(regex, inputString);

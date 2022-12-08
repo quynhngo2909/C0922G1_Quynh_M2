@@ -20,40 +20,10 @@ public class VillaServiceImpl implements IVillaService, IFileIO<Facility> {
     @Override
     public String addNewVilla(Facility newVilla) {
         Map<String, Facility> villaMap = readFile(VILLA_FILE_PATH);
-        boolean isUsedID = false;
-        String tempId = newVilla.getId();
-
-        do {
-            for (String villaId : villaMap.keySet()) {
-                if (tempId.equals(villaId)) {
-                    System.out.println("The villa id " + tempId + " has been used. Please input new villa id");
-                    isUsedID = true;
-                    tempId = sc.nextLine();
-                    break;
-                } else {
-                    isUsedID = false;
-                }
-            }
-        } while (isUsedID);
-
-        newVilla.setId(tempId);
-
         villaMap.put(newVilla.getId(), newVilla);
         writeFile(VILLA_FILE_PATH, villaMap);
         return newVilla.getId();
     }
-
-//    @Override
-//    public void displayList() {
-//        Map<String, Facility> villaMap = readFile(VILLA_FILE_PATH);
-//        for (Map.Entry<String, Facility> e : villaMap.entrySet()) {
-//            System.out.println(e.getValue().toString());
-//        }
-//    }
-
-//    @Override
-//    public void displayVillaListMaintenance() {
-//    }
 
     private void validateFilePath(String filePath) {
         File file = new File(filePath);
@@ -76,8 +46,8 @@ public class VillaServiceImpl implements IVillaService, IFileIO<Facility> {
             br = new BufferedReader(new FileReader(filePath));
             while ((line = br.readLine()) != null && !line.isEmpty()) {
                 String[] splitLine = line.split(",");
-                villaMap.put(splitLine[0], new Villa(splitLine[1],splitLine[2],splitLine[3],splitLine[4],splitLine[5],
-                        splitLine[6],splitLine[7],splitLine[8],splitLine[9]));
+                villaMap.put(splitLine[0], new Villa(splitLine[1], splitLine[2], splitLine[3], splitLine[4], splitLine[5],
+                        splitLine[6], splitLine[7], splitLine[8], splitLine[9]));
             }
             br.close();
         } catch (IOException e) {
@@ -101,5 +71,16 @@ public class VillaServiceImpl implements IVillaService, IFileIO<Facility> {
         } catch (IOException e) {
             e.printStackTrace();
         }
+    }
+
+    public boolean isUsedID(String id) {
+        Map<String, Facility> villaMap = readFile(VILLA_FILE_PATH);
+        for (String villaId : villaMap.keySet()) {
+            if (id.equals(villaId)) {
+                System.out.println("The villa id " + id + " has been used");
+                return true;
+            }
+        }
+        return false;
     }
 }

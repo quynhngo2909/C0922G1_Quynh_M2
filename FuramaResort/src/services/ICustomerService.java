@@ -6,5 +6,8 @@ import java.text.ParseException;
 
 public interface ICustomerService extends IService {
     void addNewCustomer(Customer o);
-    void editCustomer(String editedID);
+    void editCustomer(Customer o);
+
+    boolean isIdUsed(String id);
+    boolean isCoincidentIdentityNumber(String identityNumber);
 }
